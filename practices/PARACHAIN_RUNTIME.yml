@@ -1,0 +1,48 @@
+💥 Problem
+You're including complicated modules like:
+
+Disputes 😡 → used when validators cheat (you don’t need this in a trusted private network)
+
+Slashing ✂️ → punishing bad behavior (again, no need if everyone is trusted)
+
+Coretime 🕒 → used to sell blockchain space (not needed for private usage). 
+Coretime is the system in Polkadot that manages and allocates computational resources (time on the relay chain's validators) to parachains
+Your relay chain is private. You don't have public parachains competing for limited resources, and you don't need to sell "time" to anyone.
+
+my private blockchain will have parachains but they will be private.. so should I use coretime?
+No, you generally should NOT use the full, complex Coretime system (like pallet_coretime, on_demand, assigner_coretime, etc.) from the Polkadot SDK for your private relay chain.
+
+What you will do instead:
+Instead of the full Coretime system, your relay chain will simply:
+Pre-configure the required resources: You will define which parachains are connected and ensure the relay chain validators are always available to process their blocks.
+Implicit Allocation: Resources are allocated implicitly based on the validators' availability and the configured parachains, without any need for a separate economic or market-based Coretime system.
+
+
+On-Demand Parachains 🎢 → used for flexible parachains (not needed if your parachains are fixed)
+
+HRMP & DMP 📬 → messaging between parachains and relay chain (not needed if your system is simple)
+
+These features make your blockchain slower, harder to maintain, and more complex — but you're not using them!
+
+✅ Solution
+Keep only the basic stuff that allows parachains to connect and run smoothly:
+
+Minimal Code You Should Keep:
+Configuration ✅ → set up parameters like max parachains
+
+Initializer ✅ → bootstraps the system every session
+            ✅Making sure the new parachian is registered.
+            ✅Setting up its initial configuration in relay chain knows how to work with it.
+            ✅Getting its very first block (its starting state) recognized by the main data center
+
+Paras ✅ → basic management of parachains
+
+Inclusion ✅ → helps include parachain blocks into relay blocks. 
+          ✅Ensures parachain blocks are valid and can be added to the relay chain.
+          (i.e., that it follows its rules and hasn't been tampered with)
+
+Shared ✅ → shares state/info between modules
+
+Session Info ✅ → info about current validator session
+
+These are just enough to let your parachains work under a simple, trusted setup.

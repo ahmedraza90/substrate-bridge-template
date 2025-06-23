@@ -1,0 +1,23 @@
+FOLDER DESCRIPTIONS:
+bridges: This folder helps connect different blockchains so they can talk to each other and share information.
+cumulus: This folder is for creating smaller blockchains (called parachains) that work together with a bigger blockchain like Polkadot.
+scripts: Holds scripts for automating tasks like building, testing, or deploying the project.
+substrate: The core framework for building blockchains. It provides the foundational components like runtime modules (pallets), networking, and consensus mechanisms.
+target: This is where the computer puts the files it creates when you build or compile the project.
+templates: Contains boilerplate or starter code for creating new projects, such as 
+
+Connections:
+substrate: is the foundation of the project, providing the core blockchain framework. Other components like cumulus and bridges build on top of it.
+cumulus: extends substrate to enable parachain functionality, allowing blockchains to connect to Polkadot or Kusama.
+bridges: interacts with both substrate and cumulus to enable cross-chain communication.
+umbrella: acts as a central hub, re-exporting components from substrate, cumulus, and bridges for easier integration.
+scripts: automate tasks across all these components, such as building parachains or deploying bridges.
+templates: provide starting points for creating new parachains or runtime modules, leveraging substrate and cumulus.
+
+Substrate Folder:
+Purpose: The substrate folder contains the core blockchain framework. It provides the foundational tools and libraries for building blockchains, including runtime modules (pallets), networking, consensus mechanisms, and client-side components.
+Scope: It is a general-purpose framework that can be used to build any blockchain, not just Polkadot. It is modular and extensible, allowing developers to create custom blockchains with specific features.
+
+Polkadot Folder:
+Purpose: The polkadot folder contains the implementation of the Polkadot relay chain. It specializes the Substrate framework to create the Polkadot blockchain, which acts as the relay chain for connecting parachains.
+Scope: It is specific to the Polkadot ecosystem and focuses on implementing the relay chain logic, governance, and shared security for parachains.

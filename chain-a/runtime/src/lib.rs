@@ -53,7 +53,6 @@ use sp_version::RuntimeVersion;
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
 pub use pallet_timestamp::Call as TimestampCall;
-#[cfg(any(feature = "std", test))]
 pub mod genesis_config_presets;
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know

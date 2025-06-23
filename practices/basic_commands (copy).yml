@@ -1,0 +1,8 @@
+/target/release/polkadot --dev --tmp
+is used to start a local Polkadot node in development mode, primarily for testing or development. Here's a breakdown of what it means:
+
+🔧 Full Breakdown:
+Part	Meaning
+./target/release/polkadot	This runs the Polkadot binary you built from source. It assumes you're in the root directory of the Polkadot repo, and you've compiled it in release mode (cargo build --release).
+--dev	Starts the node with a development chain specification: a single validator node, no network connections, instant block production (no consensus delays), and fast finality. Great for local testing.
+--tmp	Uses a temporary database directory, which is automatically deleted when the node shuts down. This ensures no blockchain state or storage is persisted across runs.

@@ -43,7 +43,7 @@ use sp_version::RuntimeVersion;
 // Local module imports
 use super::{
     AccountId, Aura, Balance, Block, Executive, Grandpa, InherentDataExt, Nonce, Runtime,
-    RuntimeCall, SessionKeys, System, TransactionPayment, VERSION,
+    RuntimeCall, RuntimeGenesisConfig, SessionKeys, System, TransactionPayment, VERSION,
 };
 
 impl_runtime_apis! {
@@ -288,17 +288,17 @@ impl_runtime_apis! {
         }
     }
 
-    // impl sp_genesis_builder::GenesisBuilder<Block> for Runtime {
-    //     fn build_state(config: Vec<u8>) -> sp_genesis_builder::Result {
-    //         build_state::<RuntimeGenesisConfig>(config)
-    //     }
+    impl sp_genesis_builder::GenesisBuilder<Block> for Runtime {
+        fn build_state(config: Vec<u8>) -> sp_genesis_builder::Result {
+            build_state::<RuntimeGenesisConfig>(config)
+        }
 
-    //     fn get_preset(id: &Option<sp_genesis_builder::PresetId>) -> Option<Vec<u8>> {
-    //         get_preset::<RuntimeGenesisConfig>(id, crate::genesis_config_presets::get_preset)
-    //     }
+        fn get_preset(id: &Option<sp_genesis_builder::PresetId>) -> Option<Vec<u8>> {
+            get_preset::<RuntimeGenesisConfig>(id, crate::genesis_config_presets::get_preset)
+        }
 
-    //     fn preset_names() -> Vec<sp_genesis_builder::PresetId> {
-    //         crate::genesis_config_presets::preset_names()
-    //     }
-    // }
+        fn preset_names() -> Vec<sp_genesis_builder::PresetId> {
+            crate::genesis_config_presets::preset_names()
+        }
+    }
 }

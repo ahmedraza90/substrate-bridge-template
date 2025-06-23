@@ -1,0 +1,37 @@
+What Is It?
+A runtime is the brain of a blockchain built with Polkadot SDK. It contains all the rules and logic that determine how the blockchain works, processes transactions, and updates its state.
+Key Features
+
+WebAssembly Format
+Runtimes are compiled into WebAssembly (Wasm), ensuring they run exactly the same way on any computer
+This guarantees all nodes process transactions identically Upgradable Without Disruption Unlike traditional blockchains that require hard forks to upgrade, Polkadot runtimes can be updated without interrupting the network
+The new code is stored on-chain and automatically activated at a specific block
+
+
+Modular Building Blocks
+Built using "pallets" - plug-and-play components for specific functions like voting, tokens, or identity
+Developers can mix and match these components or create custom ones
+
+
+Separation from Network Functions
+The runtime handles business logic (what should happen)
+The node/client handles network tasks like talking to other computers and reaching consensus
+
+Why test_runtime Could Be a Better Choice for Learning
+Simplicity: The test_runtime (likely at polkadot-sdk/polkadot/parachains/runtimes/test_runtime/src/lib.rs) is probably a minimal runtime designed for testing purposes within the Polkadot SDK. It would have fewer pallets and dependencies, making it easier to understand and modify for a beginner or intermediate learner.
+Focus on Core Concepts: A test runtime typically includes only the essential pallets (e.g., System, Balances, Timestamp), which aligns better with your goal of building a private blockchain without parachain or XCM complexity.
+Faster Iteration: With fewer pallets, compiling and running the node will be quicker, allowing you to experiment and learn faster.
+
+Why Not common or metrics?
+common: This directory (likely polkadot-sdk/polkadot/parachains/runtimes/common/) typically contains shared code or utilities (e.g., lib.rs with helper functions or traits) used across runtimes like rococo or westend. It’s not a standalone runtime, so it won’t have a construct_runtime! macro to work with.
+metrics: This directory (likely polkadot-sdk/polkadot/parachains/runtimes/metrics/) is probably focused on runtime metrics or telemetry (e.g., lib.rs with metrics-related logic). It’s also not a full runtime, so it’s not suitable for our purpose of simplifying a runtime.
+
+Why Not westend or Another Runtime?
+westend: Similar to rococo, Westend is another testnet runtime (polkadot-sdk/polkadot/parachains/runtimes/westend/src/lib.rs). It’s also feature-rich but might have slightly different configurations (e.g., different parachain setups). It’s a valid choice, but there’s no significant advantage over rococo for learning unless you specifically want to explore Westend’s setup.
+Other Runtimes: Other runtimes in the SDK (e.g., under cumulus/runtimes/ like asset-hub-rococo) are parachain-specific and include additional complexity (e.g., XCM, parachain system pallets) that might overwhelm a learner focusing on a private blockchain.
+
+Recommendation: Start with test_runtime
+Given your focus on learning Substrate and building a private blockchain, I agree that starting with test_runtime makes more sense:
+It’s likely a minimal runtime, which is easier to understand and modify.
+It avoids unnecessary complexity (e.g., parachain-specific pallets like XcmPallet or Parachains).
+It’s still part of the Polkadot SDK, so you’ll learn how Substrate runtimes are structured in a real codebase.

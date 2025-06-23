@@ -1,0 +1,58 @@
+
+Relay Chain
+
+The main Polkadot network
+Core blockchain that coordinates the entire system
+Provides shared security and consensus
+
+Parachains
+
+Custom blockchains that connect to the Relay Chain
+Each can have specialized functions/features
+Benefit from Relay Chain's security
+
+Bridges
+
+Connect Polkadot to external blockchains (like Ethereum, Bitcoin)
+Allow for cross-ecosystem communication
+
+Consensus Engine
+
+Handles finality and security for the network
+Ensures all nodes agree on the state of the blockchain
+
+Pallets
+
+Modular, reusable components
+Building blocks for blockchain functionality
+Examples: balances, governance, staking
+
+Runtime
+
+Combines various pallets into blockchain logic
+Defines how the blockchain processes transactions
+Determines state transition rules
+
+XCMP (Cross-Chain Message Passing)
+
+Protocol for parachains to communicate with each other
+Enables interoperability between parachains.
+
+Facilitates cross-chain messaging
+Enables asset transfers between chains
+Provides programmable messaging with features like branching logic and safe dispatches
+
+Substrate SDK
+
+The framework underpinning everything
+Provides tools and libraries to build blockchains
+Foundation of the entire Polkadot ecosystem
+
+
+
+Cumulus
+Cumulus extends Substrate chains with parachain capabilities, allowing them to connect to the Polkadot network. It:
+
+Transforms Substrate-based chains into Polkadot-compatible parachains
+Converts Substrate nodes into parachain nodes
+Simplifies integration with the Polkadot ecosystem
