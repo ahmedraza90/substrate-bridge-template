@@ -277,7 +277,7 @@ mod runtime {
 // Bridge GRANDPA Configuration - Chain A tracks Chain B's finality
 impl pallet_bridge_grandpa::Config<pallet_bridge_messages::Instance1> for Runtime {
     type RuntimeEvent = RuntimeEvent;
-    type BridgedChain = ChainB;
+    type BridgedChain = ChainA;
     type MaxFreeHeadersPerBlock = ConstU32<4>;
     type FreeHeadersInterval = ConstU32<1>;
     type HeadersToKeep = ConstU32<1024>;
@@ -337,8 +337,8 @@ impl pallet_bridge_messages::Config<pallet_bridge_messages::Instance1> for Runti
     type WeightInfo = (); // Use default weights for now
 
     // Use the correct interface from your example
-    type ThisChain = bridge_config::ChainA;
-    type BridgedChain = bridge_config::ChainB;
+    type ThisChain = bridge_config::ChainB;
+    type BridgedChain = bridge_config::ChainA;
     type BridgedHeaderChain =
         pallet_bridge_grandpa::GrandpaChainHeaders<Self, pallet_bridge_grandpa::Instance1>;
 
