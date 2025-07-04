@@ -1,0 +1,89 @@
+[workspace.package]
+license = "MIT-0"
+authors = ["Parity Technologies <admin@parity.io>"]
+homepage = "https://paritytech.github.io/polkadot-sdk/"
+repository = "https://github.com/paritytech/polkadot-sdk-solochain-template.git"
+edition = "2021"
+
+[workspace]
+members = [
+    "bridges/relays/client-substrate",
+    "bridges/relays/finality", 
+    "bridges/relays/utils",
+]
+resolver = "2"
+
+# Add this section to define workspace lints
+[workspace.lints]
+# rust.missing_docs = "warn"
+rust.unused_crate_dependencies = "warn"
+clippy.all = "warn"
+clippy.pedantic = "warn"
+clippy.nursery = "warn"
+
+
+[workspace.dependencies]
+async-std = { version = "1.9.0" }
+async-trait = { version = "0.1.88" }
+codec = { version = "3.7.5", default-features = false, package = "parity-scale-codec" }
+futures = { version = "0.3.31" }
+jsonrpsee = { version = "0.24.3" }
+log = { version = "0.4.22", default-features = false }
+num-traits = { version = "0.2.17", default-features = false }
+quick_cache = { version = "0.3" }
+rand = { version = "0.8.5", default-features = false }
+scale-info = { version = "2.11.6", default-features = false }
+serde_json = { version = "1.0.132", default-features = false }
+thiserror = { version = "1.0.64" }
+tokio = { version = "1.45.0", default-features = false }
+bp-header-chain = { version = "0.20.1", default-features = false }
+bp-messages = { version = "0.20.1", default-features = false }
+bp-runtime = { version = "0.20.1", default-features = false }
+bp-polkadot-core = { version = "0.20.1", default-features = true }
+finality-relay = { path = "bridges/relays/finality" }
+relay-utils = { path = "bridges/relays/utils" }
+frame-support = { version = "39.1.0", default-features = true }
+pallet-transaction-payment = { version = "40.0.0", default-features = true }
+pallet-transaction-payment-rpc-runtime-api = { version = "40.0.0", default-features = true }
+pallet-utility = { version = "40.0.0", default-features = true }
+sc-chain-spec = { version = "41.0.0", default-features = true }
+sc-network-types= { version = "0.10.0", default-features = true }
+sc-network= { version = "0.34.0", default-features = true }
+sc-rpc-api = { version = "0.47.0", default-features = true }
+sc-transaction-pool-api = { version = "39.0.0", default-features = true }
+sp-consensus-grandpa = { version = "22.0.0", default-features = true }
+sp-core = { version = "36.1.0", default-features = true }
+sp-rpc = { version = "34.0.0", default-features = true }
+sp-runtime = { version = "41.1.0", default-features = true }
+sp-std = { version = "14.0.0", default-features = true }
+sp-trie = { version = "39.1.0", default-features = true }
+sp-version = { version = "39.0.0", default-features = true }
+backoff = { version = "0.4" }
+parking_lot = { version = "0.12.1", default-features = false }
+anyhow = { version = "1.0.81", default-features = false }
+isahc = { version = "1.2" }
+jsonpath_lib = { version = "0.3" }
+sp-tracing = { version = "17.1.0", default-features = false }
+sysinfo = { version = "0.30" }
+time = { version = "0.3" }
+prometheus-endpoint = { version = "0.17.2" , default-features = false, package = "substrate-prometheus-endpoint" }
+substrate-prometheus-endpoint = { version = "0.17.2", default-features = false }
+xcm = { version = "15.1.0", default-features = true, package = "staging-xcm" }
+
+[profile.release]
+opt-level = 3
+panic = "unwind"
+
+[profile.dev.package.backtrace]
+inherits = "release"
+
+[profile.production]
+codegen-units = 1
+inherits = "release"
+lto = true
+
+[profile.testnet]
+debug = 1
+debug-assertions = true
+inherits = "release"
+overflow-checks = true
