@@ -1,0 +1,38 @@
+[package]
+name = "solo-chain-relay"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "relay"
+path = "src/main.rs"
+
+[dependencies]
+# Bridge dependencies
+relay-substrate-client = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+lib-substrate-relay = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+relay-utils = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+bp-messages = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+bp-header-chain = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+bp-runtime = { git = "https://github.com/paritytech/parity-bridges-common", branch = "master" }
+
+# Substrate dependencies
+sp-core = "28.0"
+sp-runtime = "31.0"
+sp-consensus-grandpa = "13.0"
+frame-support = "28.0"
+
+# Utilities
+codec = { package = "parity-scale-codec", version = "3.0", features = ["derive"] }
+async-trait = "0.1"
+futures = "0.3"
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+env_logger = "0.10"
+log = "0.4"
+clap = { version = "4.0", features = ["derive"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

@@ -1,4 +1,5 @@
 ✅ WHAT IS MACRO ??
+
 At compile time:
 
 You define all possible scenarios in the macro (e.g., log!("msg"), log!("{}", x)).
