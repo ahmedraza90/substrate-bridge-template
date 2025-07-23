@@ -2,10 +2,7 @@ use bp_header_chain::ChainWithGrandpa;
 use bp_messages::{ChainWithMessages, MessageNonce};
 use bp_runtime::{Chain, ChainId};
 use frame_support::sp_runtime::StateVersion;
-use sp_runtime::{
-    traits::BlakeTwo256,
-    AccountId32, MultiSignature,
-};
+use sp_runtime::{traits::BlakeTwo256, AccountId32, MultiSignature};
 
 // Chain A defines ONLY itself
 pub const CHAIN_A_ID: ChainId = *b"chna";
