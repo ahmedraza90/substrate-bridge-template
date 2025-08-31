@@ -81,7 +81,7 @@ async fn main() {
 
 
 // Sequential (Your Description)
-rust#[tokio::main]
+#[tokio::main]
 async fn main() {
     println!("Starting at: {:?}", std::time::Instant::now());
     
@@ -110,7 +110,7 @@ async fn slow_task(name: &str) {
 
 
 // Concurrent (True Concurrency)
-rust#[tokio::main]
+#[tokio::main]
 async fn main() {
     println!("Starting at: {:?}", std::time::Instant::now());
     
@@ -140,7 +140,7 @@ async fn main() {
 // Concurrency vs Parallelism
 // Concurrency (What Tokio Does)
 // One CPU core(single threaded), switching between tasks very fast
-// rust// Tokio on a single core:
+// Tokio on a single core:
 // Time: 0ms   10ms   20ms   30ms   40ms   50ms
 // Core: [Task1][Task2][Task3][Task1][Task2][Task1]
 //       ↑ Switches between tasks very quickly

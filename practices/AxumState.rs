@@ -1,6 +1,5 @@
-1. In Node.js / Express
-
-When you write:
+// 1. In Node.js / Express
+// When you write:
 
 app.get("/user/:id", (req, res) => {
   const id = req.params.id;   // Express filled this for you
@@ -8,24 +7,18 @@ app.get("/user/:id", (req, res) => {
 });
 
 
-You didn’t create req or res yourself.
+// You didn’t create req or res yourself.
+// Express built them for you and passed them into your function.
+// It looked at the HTTP request and said:
+// "req = info about the request (params, body, headers...)"
+// "res = helper for sending back a response"
+// So your handler just receives those arguments.
 
-Express built them for you and passed them into your function.
+// 2. In Rust / Axum
+// Same idea. In Axum:
 
-It looked at the HTTP request and said:
-
-"req = info about the request (params, body, headers...)"
-
-"res = helper for sending back a response"
-
-So your handler just receives those arguments.
-
-2. In Rust / Axum
-
-Same idea. In Axum:
-
-With req.params in Express, you tell Express “give me this param”.
-With Axum, you use extractors like Path, Json, or State to tell it where to pull data from.
+// With req.params in Express, you tell Express “give me this param”.
+// With Axum, you use extractors like Path, Json, or State to tell it where to pull data from.
 
 Example:
 
@@ -38,15 +31,12 @@ async fn handler(
 }
 
 
-State<AppState> → comes from app’s shared state (.with_state)
+// State<AppState> → comes from app’s shared state (.with_state)
+// Path<u32> → comes from URL params
+// Json<MyBody> → comes from request body
+// Axum builds these arguments just like Express builds req and res.
 
-Path<u32> → comes from URL params
-
-Json<MyBody> → comes from request body
-
-Axum builds these arguments just like Express builds req and res.
-
-Example Without State
+// Example Without State
 use axum::{Router, routing::get};
 use std::net::SocketAddr;
 
@@ -72,24 +62,18 @@ async fn main() {
         .unwrap();
 }
 
-🚨 What Happens Here
+// 🚨 What Happens Here
 
-The closure for get is 'static — it might live as long as the whole server.
+// The closure for get is 'static — it might live as long as the whole server.
+// But db only lives inside main.
+// The borrow &db would not compile because the compiler sees a risk:
+// the closure could be called after db is gone.
+// → Lifetime violation.
+// You’ll get an error like:
+// borrowed value does not live long enough
 
-But db only lives inside main.
-
-The borrow &db would not compile because the compiler sees a risk:
-
-the closure could be called after db is gone.
-
-→ Lifetime violation.
-
-You’ll get an error like:
-
-borrowed value does not live long enough
-
-How Axum State Solves This
-rustuse axum::{
+// How Axum State Solves This
+use axum::{
     Router, 
     routing::get,
     extract::State
@@ -119,8 +103,10 @@ async fn main() {
         .await
         .unwrap();
 }
-What Axum Does Behind the Scenes
-rust// 1. When you call .with_state(db):
+
+// What Axum Does Behind the Scenes
+
+// 1. When you call .with_state(db):
 //    Axum takes OWNERSHIP of your DbClient
 //    Stores it safely inside the Router
 
@@ -132,8 +118,8 @@ rust// 1. When you call .with_state(db):
 // 3. Your handler gets its own copy:
 //    No borrowing, no lifetime issues!
 
-Why This Works
+// Why This Works
 
-Ownership Transfer: You give Axum the DbClient - no more borrowing
-Clone on Demand: Axum clones it for each request - each handler gets its own copy
-'static Lifetime: The cloned data lives as long as needed - no lifetime issues
+// Ownership Transfer: You give Axum the DbClient - no more borrowing
+// Clone on Demand: Axum clones it for each request - each handler gets its own copy
+// 'static Lifetime: The cloned data lives as long as needed - no lifetime issues

@@ -31,7 +31,7 @@ impl Animal {
     }
 }
 
-// as far as i understand so the most strong advantage i see is that..
+// as far as i understand the advantage is that..
 // ✅ 2. Flexibility for future changes
 // Let's say later you want to make AnimalGenesisConfig a completely different struct.
 
@@ -40,3 +40,41 @@ impl Animal {
 // No need to update all usages across your codebase.
 
 // second advantage could be sometimes about get rid of complex names just assigning new or simple name to already define types.
+
+
+// STRONG EXAMPLE OF Type Alias
+// pub fn create_signed_offline<Call, Signer>(
+//         &self,
+//         call: &Call,
+//         signer: &Signer,
+        params: <T::ExtrinsicParams as ExtrinsicParams<T>>::Params,
+    // ) -> Result<SubmittableExtrinsic<T, C>, Error>
+
+
+
+trait Config {
+    type ExtrinsicParams;  // ← Associated type
+}
+
+trait ExtrinsicParams<T: Config> {  // ← Trait with generic parameter T
+    type Params;
+}
+
+struct SubstrateConfig;
+
+impl Config for SubstrateConfig {
+    type ExtrinsicParams = MyExtrinsicParams;  // ← Concrete type
+}
+
+struct MyExtrinsicParams;
+
+impl ExtrinsicParams<SubstrateConfig> for MyExtrinsicParams {  // ← Implementation
+    type Params = SomeParamsType;
+}
+
+// Now when T = SubstrateConfig:
+// T::ExtrinsicParams = MyExtrinsicParams
+// ExtrinsicParams<T> = ExtrinsicParams<SubstrateConfig>
+
+// So this becomes:
+// <MyExtrinsicParams as ExtrinsicParams<SubstrateConfig>>::Params

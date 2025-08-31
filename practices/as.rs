@@ -6,8 +6,8 @@ where
 }
 
 
-Let me show you why this syntax exists with a simpler example:
-rust// Imagine you have two traits with the same method name:
+// Let me show you why this syntax exists with a simpler example:
+// Imagine you have two traits with the same method name:
 trait Animal {
     fn speak() {
         println!("Some animal sound");
