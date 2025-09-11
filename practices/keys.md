@@ -67,12 +67,12 @@ let signer: Pair = Pair::from_string("//Alice", None)?;
 
 ### Supported Seed Formats:
 
-| Format | Example | Description |
-|--------|---------|-------------|
-| **Dev Seeds** | `"//Alice"`, `"//Bob"` | Built-in development accounts |
-| **Hex Private Key** | `"0x1234abcd..."` | Direct private key |
-| **Mnemonic** | `"word1 word2 ..."` | BIP39 seed phrase |
-| **URI** | `"//Alice/stash"` | Hierarchical derivation |
+| Format                    | Example                 | Description                   |
+|---------------------------|-------------------------|-------------                  |
+| **Dev Seeds**             | `"//Alice"`, `"//Bob"`  | Built-in development accounts |
+| **Hex Private Key**       | `"0x1234abcd..."`       | Direct private key            |
+| **Mnemonic**              | `"word1 word2 ..."`     | BIP39 seed phrase             |
+| **URI**                   | `"//Alice/stash"`       | Hierarchical derivation       |
 
 ### Development Seeds
 ```rust
