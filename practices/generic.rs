@@ -39,33 +39,27 @@ pub fn update_task<F>(&self, id: &Uuid, updater: F) -> bool
 // That’s where traits like Fn, FnMut, and FnOnce come in.
 // They are traits that describe how something can be called like a function.
 
-a) Fn
+// a) Fn
+//     Can be called many times.
+//     Captures value by reference (&T).
 
-Can be called many times.
+//         let name = "Alice".to_string();
+//         let f = || println!("Hello {}", name); // captures `&name`
+//         f(); f(); // can call multiple times
 
-Captures things by reference (&T).
+// b) FnMut
+//     Can be called many times, but mutates captured variables.
+//     Captures by mutable reference (&mut T).
 
-let name = "Alice".to_string();
-let f = || println!("Hello {}", name); // captures `&name`
-f(); f(); // can call multiple times
+//         let mut counter = 0;
+//         let mut f = || { counter += 1; println!("{}", counter); };
+//         f(); f(); // works, updates counter
 
-b) FnMut
+// c) FnOnce
+//     Can only be called once.
+//     Captures by value (T), so it moves ownership. ( its not about input paramtre its about capturing value from outside)
 
-Can be called many times, but mutates captured variables.
-
-Captures by mutable reference (&mut T).
-
-let mut counter = 0;
-let mut f = || { counter += 1; println!("{}", counter); };
-f(); f(); // works, updates counter
-
-c) FnOnce
-
-Can only be called once.
-
-Captures by value (T), so it moves ownership.
-
-let name = "Alice".to_string();
-let f = || name; // captures and moves `name`
-println!("{}", f()); // ok
-// f(); // ERROR: cannot call again, name was moved
+//         let name = "Alice".to_string();
+//         let f = || name; // captures and moves `name`
+//         println!("{}", f()); // ok
+//         // f(); // ERROR: cannot call again, name was moved

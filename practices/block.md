@@ -31,9 +31,6 @@ What	Purpose
 ✅ 1. Block Header (not the whole block!)
 This includes:
 
-markdown
-Copy
-Edit
 BlockHeader {
     parent_hash,
     state_root,
@@ -47,9 +44,6 @@ BlockHeader {
 ✅ 2. Finality Proof
 This is separate from the header, and it includes:
 
-rust
-Copy
-Edit
 FinalityProof {
     block_hash,                  // the hash of the block being finalized
     justification: GrandpaJustification {

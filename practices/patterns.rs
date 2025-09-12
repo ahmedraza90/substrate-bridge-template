@@ -159,3 +159,16 @@ pub fn value_mut(&mut self) -> &mut V {
 pub fn pair_mut(&mut self) -> (&K, &mut V) {
     unsafe { (&*self.k, &mut *self.v) }
 }
+
+// Why use this pattern?
+// Encapsulation:
+// Keeps the internal logic hidden and allows changing internals without breaking the public API.
+
+// Code reuse:
+// Internal helpers can be reused by multiple public methods or by other internal code.
+
+// Cleaner public API:
+// Public methods are easy to read and document, while complex logic is separated.
+
+// Safety and consistency:
+// Public methods can enforce invariants or pre/post-conditions before/after calling the internal function.
