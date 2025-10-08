@@ -1,4 +1,4 @@
-Excellent question! This is a great example of how Rust's **module system** and **import resolution** works. Let me explain why the imports aren't needed in `configs/mod.rs`:
+This is a great example of how Rust's **module system** and **import resolution** works. Let me explain why the imports aren't needed in `configs/mod.rs`:
 
 ## **The Magic: How Rust Resolves Types Without Explicit Imports**
 
@@ -200,3 +200,26 @@ cargo check
 This is a **beautiful example** of Rust's intelligent module system working behind the scenes! The language is designed to minimize boilerplate while maintaining type safety.
 
 Your setup works because Rust **automatically resolves** types through the module hierarchy and dependency system. Pretty elegant, right? 🎯
+
+
+4. Re-exports (pub use)
+
+A shortcut to make items from a module available at the crate root.
+
+Example:
+
+pub mod animals {
+    pub struct Dog;
+}
+
+// Re-export
+pub use animals::*;
+
+
+Now you can do:
+
+use crate::Dog;              // ✅ shortcut
+use crate::animals::Dog;     // ✅ still works
+If you don't re-export, you can still use those items, but you must use the full path, like crate::mod::Item.
+
+crate refers to the current crate (the whole Rust package, which is your pallet).

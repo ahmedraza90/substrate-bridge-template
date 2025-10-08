@@ -25,7 +25,7 @@
 // --template
 // ../../.maintain/frame-weight-template.hbs
 
-#![cfg_attr(rustfmt, rustfmt_skip)]
+#![cfg_attr(rustfmt, rustfmt_skip)]	
 #![allow(unused_parens)]
 #![allow(unused_imports)]
 
@@ -36,6 +36,9 @@ use core::marker::PhantomData;
 pub trait WeightInfo {
 	fn do_something() -> Weight;
 	fn cause_error() -> Weight;
+	   // NEW: Add these two lines
+    fn store_farm_update() -> Weight;
+    fn query_farm_version() -> Weight;
 }
 
 /// Weights for pallet_template using the Substrate node and recommended hardware.
@@ -62,10 +65,19 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 			.saturating_add(T::DbWeight::get().reads(1_u64))
 			.saturating_add(T::DbWeight::get().writes(1_u64))
 	}
+
+	    // NEW: Add these two functions
+    fn store_farm_update() -> Weight {
+        Weight::from_parts(50_000, 0)
+    }
+    
+    fn query_farm_version() -> Weight {
+        Weight::from_parts(20_000, 0)
+    }
 }
 
 // For backwards compatibility and tests
-impl WeightInfo for () {
+impl WeightInfo for () {	
 	/// Storage: Template Something (r:0 w:1)
 	/// Proof: Template Something (max_values: Some(1), max_size: Some(4), added: 499, mode: MaxEncodedLen)
 	fn do_something() -> Weight {
@@ -87,4 +99,12 @@ impl WeightInfo for () {
 			.saturating_add(RocksDbWeight::get().reads(1_u64))
 			.saturating_add(RocksDbWeight::get().writes(1_u64))
 	}
+	    // NEW: Add these two functions
+    fn store_farm_update() -> Weight {
+        Weight::from_parts(50_000, 0)
+    }
+    
+    fn query_farm_version() -> Weight {
+        Weight::from_parts(20_000, 0)
+    }
 }

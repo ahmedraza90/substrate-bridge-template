@@ -24,62 +24,61 @@ fn main() {
 }
 
 
-❓ Why Use IsType<T> If T == T Anyway?
-
-
-//AS
-
-<Self as SomeTrait>::SomeType
-
-Because the same struct might implement multiple traits that have the same associated type name — like:
-
-trait A {
-    type Thing;
-}
-trait B {
-    type Thing;
-}
-If a struct implements both A and B, and you write Self::Thing, it’s ambiguous — which one do you mean?
-
-So you write:
-
-<Self as A>::Thing // to be clear you're referring to A's Thing
-
-
 
 
 
 
 🔧 Imagine Two Pallets:
-Each pallet defines its own Event enum.
 
-But the runtime (whole blockchain) needs a single unified RuntimeEvent that includes all pallet events.
+// Each pallet defines its own Event enum.
+// But the runtime (whole blockchain) needs a single unified RuntimeEvent that includes all pallet events.
+// Now, inside the pallet, you want to write generic code that says:
+// “Whatever type you give me as RuntimeEvent, make sure it’s the same as the system-wide runtime event type.”
 
-Now, inside the pallet, you want to write generic code that says:
+// Here’s what Substrate does:
+// type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 
-“Whatever type you give me as RuntimeEvent, make sure it’s the same as the system-wide runtime event type.”
+// Events from different modules
+enum SystemEvent {
+    BlockFinalized,
+}
 
-Here’s what Substrate does:
-type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
+enum MyPalletEvent {
+    SomethingStored,
+}
 
-This says:
+// Unified event type for the runtime
+enum RuntimeEvent {
+    System(SystemEvent),
+    MyPallet(MyPalletEvent),
+}
 
-"You (the runtime) can give me any type you want as RuntimeEvent, but you must prove:
-
-You can convert this pallet’s event into it (via From<Event<Self>>).
-
-It's the same type as the system's event type — enforced by IsType."
-
+// Implement From so you can convert MyPalletEvent into RuntimeEvent
+impl From<MyPalletEvent> for RuntimeEvent {
+    fn from(event: MyPalletEvent) -> Self {
+        RuntimeEvent::MyPallet(event)
+    }
+}
 
 🛡️ IsType<T> = "Type compatibility contract"
 
+// IsType<OtherType> is just a compile-time check that says:
+// “This type must be the same as OtherType.”
+// So yes, you can think of it as:
 
-🗣️ “Dear runtime, whatever type you pass into me as RuntimeEvent, make sure it’s the exact same as your system’s RuntimeEvent. Otherwise, compile error.”
+if OneType == OtherType {
+    // okay
+} else {
+    // compiler error
+}
 
-That way:
+// 🗣️ “Dear runtime, whatever type you pass into me as RuntimeEvent, make sure it’s the exact same as your system’s 
+// RuntimeEvent. Otherwise, compile error.”
 
-The pallet stays flexible (it doesn't assume what the outer runtime's event type is).
-The compiler checks the types match.
+// That way:
+
+// The pallet stays flexible (it doesn't assume what the outer runtime's event type is).
+// The compiler checks the types match.
 
 how types becomes compatible to eachother:
 it is necessary for the types to implement IsType to be compatible to each other. So RuntimeEvent of every pallet should implement IsType to make it compatible with the RuntimeEvent of Config trait from frame_system.
@@ -104,7 +103,7 @@ trait IsType<T> {}
 
 // Base trait, like frame_system::Config
 trait System {
-    type Event;
+    type Event;..
 }
 
 // Pallet trait, like Config
@@ -116,6 +115,7 @@ trait Pallet {
 struct BasicEvent {
     message: String,
 }
+
 
 // Fancy event type: extra field and method
 struct FancyEvent {
@@ -232,13 +232,6 @@ This allows CustomEvent in PalletConfig, even though SystemConfig uses StandardE
 In Substrate, construct_runtime! avoids this manual step by using a single RuntimeEvent enum.
 
 
-Connecting to Your Substrate Code
-Your Config trait:
-
-pub trait Config: frame_system::Config {
-    type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-}
-
 Every pallet: Each pallet’s Config trait has a similar RuntimeEvent bound, requiring IsType compatibility with frame_system::Config’s RuntimeEvent.
 Automatic in mock.rs: The construct_runtime! macro creates a RuntimeEvent enum that includes all pallets’ events and implements IsType<RuntimeEvent> for RuntimeEvent. This satisfies the bound for all pallets without manual IsType implementations.
 Rare manual case: If a pallet used a custom RuntimeEvent type (not the standard enum), you’d need to implement IsType manually, like in the example above.
@@ -248,7 +241,3 @@ Both my_pallet::Config and frame_system::Config use the same RuntimeEvent, so Is
 But IsType allows flexibility for cases where types differ, unlike hardcoding.
 
 
-Traits and Box: IsType is a trait bound, like bounds in Box<dyn Clone> where a type must implement Clone.
-
-What is a Trait Bound?
-A trait bound is a rule in Rust that says, “This type must follow certain behaviors or properties.” It’s like telling Rust, “Only let types that can do X, Y, or Z be used here.”

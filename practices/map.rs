@@ -9,6 +9,7 @@ let doubled = some.map(|x| x * 2)
 // map works on Option and Result. It is used to access the value wrapped inside Option or Result to update this value. Simple!!
 // If it’s Some(d) or Ok(d), run the closure. If it’s None or Err(), do nothing
 
+// map is the function that unwrap the option to access the value, perform come operation on it and then wrap it again into Some.
 
 let result = Ok(5);
 
@@ -31,7 +32,7 @@ let is_empty = filter.some(|x| !x.is_empty())
 
 // Iterator filter (what we’ve been talking about)
 
-// tasks.iter().filter(|t| t.completed)
+tasks.iter().filter(|t| t.completed)
 // Walks through many items (array/vector).Skips items that don’t match condition.
 // Only “yields” items that match.
 // Then something like .count(), .collect(), etc. consumes them.

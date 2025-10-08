@@ -138,13 +138,9 @@ and sterrik simple means do it for all the arguments you pass in.
 ✅ Some common specifiers include:
 
 ident → for names like my_trait, my_fn
-
 ty → for a type like u64, String, or Vec<u8>
-
 expr → for expressions like 3 + 5, "hello", or some_func()
-
 path → for things like crate::module::Type
-
 block → for { ... } blocks of code
 
 
@@ -173,18 +169,6 @@ app_using_macro/
 use macro_lib::macro_name;
 
 
-ATTRIBUTES:
-
-#![cfg_attr(not(feature = "std"), no_std)]
-#![recursion_limit = "256"]#[cfg(feature = "std")]
-/// Runtime version (Test).
-#[sp_version::runtime_version]
-/// Native version.
-#[cfg(any(feature = "std", test))]
-
-#![warn(missing_docs)]
-#[cfg(any(target_os = "linux", feature = "jemalloc-allocator"))]
-#[global_allocator]
 
 
 ✅ any()/all() vs. Single Conditions
@@ -195,22 +179,7 @@ any(feature = "a", feature = "b") → A OR B
 
 all(unix, target_pointer_width = "64") → Unix AND 64-bit
 
-When to Use Single Conditions:
-For simple checks of one condition:
 
-#[cfg(feature = "std")]
-
-#[cfg(not(test))]
-
-Examples:
-rust
-// OR logic
-#[cfg(any(unix, windows))] 
-fn os_specific() {}
-
-// Single condition
-#[cfg(debug_assertions)] 
-fn debug_only() {}
 
 
 ✅  feature = "..." vs. Bare Keywords
@@ -226,13 +195,12 @@ In Cargo.toml:
 toml
 [features]
 fancy_mode = []  # Define a feature named "fancy_mode"
-In Rust code:
 
-rust
+In Rust code:
 #[cfg(feature = "fancy_mode")] // Only compile if "fancy_mode" is ON
 fn fancy() { println!("✨"); }
-Run:
 
+Run:
 sh
 cargo run --features "fancy_mode"  # "✨" prints
 cargo run                         # "✨" does NOT exist
@@ -256,71 +224,14 @@ rust
 struct Point { x: i32, y: i32 }
 
 
-✅  #[cfg] vs #[cfg_attr] - Final Simple Explanation
-#[cfg] (Conditional Compilation)
-What it does:
-Decides whether to include or exclude entire blocks of code in your compiled binary based on conditions.
-
-If condition is true → The code exists in the final program
-
-If condition is false → The code is completely removed (like it was never written)
-
-Works on:
-Any item - functions, structs, impl blocks, modules, etc.
-
-Example:
-
-rust
-#[cfg(feature = "logging")]
-fn log_message() {  // This whole function either exists or doesn't
-    println!("Debug info");
-}
-#[cfg_attr] (Conditional Attributes)
-What it does:
-Decides whether to apply additional attributes to items based on conditions.
-
-If condition is true → Adds the specified attribute
-
-If condition is false → Does nothing
-
-Works on:
-Only other attributes (like #[derive], #[test], #[inline])
-
-Example:
-
-rust
-#[cfg_attr(feature = "debug_mode", derive(Debug))]
-struct Point {  // Only gets Debug derive if debug_mode is enabled
-    x: i32,
-    y: i32,
-}
-Key Difference
-#[cfg] controls whether code exists at all
-
-#[cfg_attr] controls which attributes get added to existing code
 
 
-✅ What is #[allow(...)] in Rust?
-#[allow(...)] is an attribute that tells the Rust compiler:
-
-"Please don't warn me about this thing, even if it normally would."
-
-It's used to suppress warnings that the compiler would usually show.
 
 
-✅ Understanding #[derive_impl()] with a Simple Example
-The #[derive_impl()] attribute is a Substrate-specific feature that makes implementing traits easier. 
-Let me break it down with a simple example:
-The main benefit of #[derive_impl()] is that you only need to define an implementation once, and then you can reuse it across multiple types.
 
-go to claude
 
-🔔 Examples of Compiler Warnings You Can Allow
-Warning Name	What It Means
-unused_variables	You declared a variable but never used it
-dead_code	You wrote code that is never used or called
-non_snake_case	Your function/variable name doesn't follow snake_case style
-missing_docs	Public items don’t have documentation comments
+
+
 
 
 alloc::borrow::Cow::Borrowed("polkadot-test-runtime")
@@ -347,34 +258,38 @@ crate
 
 External Crate (Library/Dependency):
 
-When you include a dependency in your Cargo.toml file, it is downloaded from crates.io or another source, and it becomes an external crate.
+When you include a dependency in your Cargo.toml file, it is downloaded from crates.io 
+or another source, and it becomes an external crate.
 For example, in your code:
 use frame_support::{
     construct_runtime, derive_impl,
     genesis_builder_helper::{build_state, get_preset},
     parameter_types,
 };
-Here, frame_support is an external crate that is downloaded as part of the Substrate framework.
+
+Here, frame_support is an external crate that is downloaded as part of the Substrate 
+framework.
 
 Current Crate (Your Project):
-
-The term crate can also refer to the current project or current library you are working on.
+The term crate can also refer to the current project or current library you are working 
+on.
 For example, in your code:
 impl crate::GetLastTimestamp<Block> for Runtime {
-Here, crate refers to the current crate (your project), which is the polkadot-sdk in this case.
+Here, crate refers to the current crate (your project), which is the polkadot-sdk in 
+this case.
 
 Modules within the Crate:
+Inside the crate, you can have modules (files or subdirectories) that organize your 
+code.
 
-Inside the crate, you can have modules (files or subdirectories) that organize your code.
 For example:
 // In lib.rs
 pub mod module;
-
 
 🛠️ type:
 This keyword is used to define a type alias. A type alias allows you to create 
 a new name for an existing type, making the code more readable or reusable.
 
-type in a trait(Flexibility): This allows developers to create a template (trait) that can be 
+type in a trait(Flexibility): This allows developers to create a template (trait) that can be.
 reused with different types without worrying abouit the actual type by other developers.
 Centralized Control: If the type needs to change, it can be updated in the implementation, and all code using the trait will automatically adapt.

@@ -17,6 +17,7 @@ codec = { features = ["derive"], workspace = true }
 frame-benchmarking = { optional = true, workspace = true }
 frame-support.workspace = true
 frame-system.workspace = true
+pallet-timestamp = { workspace = true, features = ["std"] }
 scale-info = { features = ["derive"], workspace = true }
 
 [dev-dependencies]
