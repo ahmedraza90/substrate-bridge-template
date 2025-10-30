@@ -78,3 +78,11 @@ impl ExtrinsicParams<SubstrateConfig> for MyExtrinsicParams {  // ← Implementa
 
 // So this becomes:
 // <MyExtrinsicParams as ExtrinsicParams<SubstrateConfig>>::Params
+
+
+type AppResult<T> = Result<T, AppError>;
+
+// The alias itself is generic and takes parameters and give those parameters to right side to use.
+// "Type alias should mirror the complete definition"
+// This is not partially true!
+type HashMap<K, V> = std::collections::HashMap<K, V>;

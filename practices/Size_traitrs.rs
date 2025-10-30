@@ -75,3 +75,84 @@ trait MyTrait: ?Sized {
 
 
 // Now this trait can be implemented for unsized types too.
+
+
+//INSTANCE METHOD VS STATIC METHOD
+
+Case 1 — instance method
+trait Example {
+    fn hello(&self); // instance method
+}
+
+
+This can be called like:
+
+let obj = MyType;
+obj.hello(); // ✅ instance method
+
+
+Because &self means: “I need an instance of this type.”
+when we call it like this the first argument is automatically self which is needed in this case
+
+But not like:
+MyType::hello(); // ❌ invalid
+
+
+🔹 Case 2 — static method (no self)
+// In Rust, a static method is one that does not take &self, &mut self, or self as its first argument.
+trait Example {
+    fn hello();
+}
+
+You must call it like:
+MyType::static_method();
+
+But not like:
+let m = MyType;
+m.static_method(); // ❌ invalid because first argument is self by default here but we are not taking self in arguments so there would be problem.
+
+
+This method doesn’t take self, so it doesn’t belong to any object —
+it belongs to the type itself.
+
+
+
+
+
+struct DateTime<Tz> {
+    time: String,
+    tz: Tz,
+}
+
+struct Utc;
+
+trait TimeZone {
+    fn now() -> DateTime<Self>
+    where
+        Self: Sized; // ensures we call on type, not instance
+}
+
+impl TimeZone for Utc {
+    fn now() -> DateTime<Self> {
+        DateTime {
+            time: "2025-10-16T12:00:00Z".to_string(),
+            tz: Utc,
+        }
+    }
+}
+
+fn main() {
+    let now = Utc::now(); // ✅ works
+    println!("{}", now.time);
+
+    let utc = Utc;
+    // utc.now(); // ❌ does NOT work because now() is static
+}
+
+
+
+
+
+
+
+
