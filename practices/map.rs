@@ -1,3 +1,7 @@
+MAP:
+// map works on Option and Result. It is used to access the value wrapped inside Option or Result to update this value. Simple!!
+// If it’s Some(d) or Ok(d), run the closure. If it’s None or Err(), do nothing
+// after an operation on value it wrap the value again into Some.
 let result = Ok(5);
 let doubled = result.map(|x| x * 2);  // Ok(10)
 
@@ -6,22 +10,18 @@ let doubled = error.map(|x| x * 2);   // Still Err("failed") - unchanged!
 
 let some = Some(5)
 let doubled = some.map(|x| x * 2)
-// map works on Option and Result. It is used to access the value wrapped inside Option or Result to update this value. Simple!!
-// If it’s Some(d) or Ok(d), run the closure. If it’s None or Err(), do nothing
 
-// map is the function that unwrap the option to access the value, perform come operation on it and then wrap it again into Some.
+MAP_ERR:
+map_err (for Result<T, E> only):
 
-let result = Ok(5);
-
-let updated = result.map(|x| x * 10);
-// If result was Ok(5) → you access the 5, multiply by 10, get Ok(50)
-
-// If result was Err("something") → the closure never runs, and you just get back Err("something")
+// Works on the error case.
+// Transforms the error inside Err(error).
+// If Ok, it does nothing and passes through unchanged.
 
 
+FILTER:
 let some = Some(5)
 let is_empty = filter.some(|x| !x.is_empty())
-// filter
 
 // filter works on Option like this:
 // If it’s Some(value), check the condition.
@@ -29,14 +29,12 @@ let is_empty = filter.some(|x| !x.is_empty())
 // If condition is false → turn it into None.
 // If it’s already None, it stays None.
 
-
-// Iterator filter (what we’ve been talking about)
-
 tasks.iter().filter(|t| t.completed)
 // Walks through many items (array/vector).Skips items that don’t match condition.
 // Only “yields” items that match.
 // Then something like .count(), .collect(), etc. consumes them.
 
+REF:
 ref:
 // Borrow the value inside Some instead of moving it.
 // This lets you use description as a reference (&String) without taking ownership.
@@ -45,12 +43,12 @@ if let Some(ref s) = name {
     println!("{}", s); // &String
 }
 
+AS_REF:
 🧩 2. The .as_ref() method (method-level borrowing)
 // Instead of using ref in pattern matching, you can borrow the inner value using as_ref() method:
 if let Some(s) = name.as_ref() {
     println!("{}", s); // &String
 }
-
 
 // CONFUSION
 // There’s no semantic difference between using ref and .as_ref() — they both borrow the inner value without moving it.
@@ -62,7 +60,7 @@ Works       on	Any pattern that binds	                    Any type that implemen
 Readability	Feels lower-level	                            Feels more idiomatic and consistent
 
 
-
+AS_DEREF:
 🧩 3. The .as_deref() method (borrow + deref)
 // .as_deref() is like .as_ref() but it also automatically applies Deref — turning an Option<&String> into Option<&str>.
 // This is especially nice when you only need to read data as a str, not a String.
@@ -86,3 +84,12 @@ println!("=== WHAT as_deref() ACTUALLY DOES ===\n");
     println!("• Box<T> → &T");
     println!("• PathBuf → &Path");
     println!("• OsString → &OsStr");
+
+
+    COUNT:
+    COLLECT:
+    ITER:
+    INTO_ITER:
+    wrap(),
+    unwrap();
+    unwrap_or_else();

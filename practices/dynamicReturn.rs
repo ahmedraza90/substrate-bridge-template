@@ -66,16 +66,14 @@ fn make_dog_static() -> impl Speak {
 // B. The Box<dyn Trait> (Dynamic Dispatch, Heap Allocation)
 // ----------------------------------------------------
 
-// This function promises to return a *pointer* to a type that implements 'Speak'.
+// This function returns a *pointer* to a type that implements 'Speak'.
 // The function can return EITHER a Dog or a Cat, and the decision can be
 // made at runtime (e.g., inside an 'if' block).
 fn make_animal_dynamic(is_dog: bool) -> Box<dyn Speak> {
     if is_dog {
-        // Return a Dog, allocated on the heap
-        Box::new(Dog)
+        Box::new(Dog) // Return a Dog, allocated on the heap
     } else {
-        // Return a Cat, allocated on the heap
-        Box::new(Cat)
+        Box::new(Cat) // Return a Cat, allocated on the heap
     }
 }
 
@@ -97,16 +95,16 @@ fn main() {
     // B. Using Box<dyn Trait> (Dynamic Dispatch)
     
     // 1. Cat Example
-    let dynamic_pet_cat = make_animal_dynamic(false);
+    let dynamic_cat = make_animal_dynamic(false);
     println!("Dynamic Cat Sound: {}", dynamic_pet_cat.sound());
     
     // 2. Dog Example
-    let dynamic_pet_dog = make_animal_dynamic(true);
+    let dynamic_dog = make_animal_dynamic(true);
     println!("Dynamic Dog Sound: {}", dynamic_pet_dog.sound());
     
-    // The calls to .sound() are made via the vtable (dynamic dispatch).
-    // 'dynamic_pet_cat' and 'dynamic_pet_dog' are both the same size (a pointer + vtable pointer).
-    // The actual object (Dog or Cat) is allocated on the heap.
+// The calls to .sound() are made via the vtable (dynamic dispatch).
+// 'dynamic_cat' and 'dynamic_dog' are both the same size (a pointer + vtable pointer).
+// The actual object (Dog or Cat) is allocated on the heap.
 }
 
 
@@ -161,6 +159,11 @@ impl Speak for Cat {
 }
 
 // 👇 Library function returning a concrete type (Dog)
+pub fn make_pet() -> Dog {
+    Dog
+}
+
+// 👇 behind the scene compiler substitute with actual type
 pub fn make_pet() -> Dog {
     Dog
 }
@@ -263,10 +266,10 @@ In Rust, a heterogeneous collection is a collection (like a Vec) that can hold d
 - Use `impl Trait` for most functions, especially builders and middleware stacks.
 - Use `Box<dyn Trait>` only when you need to erase the type or store mixed types.
 
+
+
 MONOMORPHIZATION:
 Monomorphization means the compiler makes a separate copy of generic code for each concrete type used.
-
-
 
 // EXAMPLE#1
 trait Speak {
@@ -295,34 +298,28 @@ fn main() {
 // fn make_dog_static() -> Dog {
 //     Dog
 // }
-// So, the compiler basically copies and pastes (i.e., monomorphizes) a separate version of the function for each concrete type used with the trait.
+// So, the compiler basically copies and pastes (i.e., monomorphizes) a separate version of the function for each concrete 
+// type used with the trait.
 
 // 🧱 Simple Definition:
 // Monomorphization means the compiler makes a separate copy of generic code for each concrete type used.
 
-
 EXAMPLE#2
+
 fn speak_twice<T: Speak>(x: T) {
     println!("{}", x.sound());
-    println!("{}", x.sound());
 }
-
 fn main() {
     let d = Dog;
     let c = Cat;
     speak_twice(d);
     speak_twice(c);
 }
-// After monomorphization, the compiler generates something like:
-fn speak_twice_for_Dog(x: Dog) {
-    println!("{}", x.sound());
-    println!("{}", x.sound());
-}
 
-fn speak_twice_for_Cat(x: Cat) {
-    println!("{}", x.sound());
-    println!("{}", x.sound());
-}
+
+// After monomorphization, the compiler generates something like:
+fn speak_twice_for_Dog(x: Dog) { println!("{}", x.sound()); }
+fn speak_twice_for_Cat(x: Cat) { println!("{}", x.sound()); }
 
 fn main() {
     let d = Dog;
@@ -349,7 +346,6 @@ fn main() {
 
 
 // 🧠 In short:
-
 // Both are compile-time static dispatch,
 // but monomorphization happens only when the function is generic — because the compiler has to duplicate the code for each used type.
 
@@ -376,4 +372,62 @@ Example behind the scenes	    fn foo_for_Dog / fn foo_for_Cat	                 f
 Syntax	                              Example	                    Concept / Feature	                    Dispatch Type	                                    Notes
 T                               fn foo<T: Trait>(x: T)      Generics / Parametric Polymorphism      Static dispatch (via monomorphization)      Compiler generates separate copies of the function for each concrete type used (Dog, Cat, etc.). This may cause code duplication but gives zero runtime overhead.
 impl Trait (return position)    fn foo() -> impl Trait      Opaque return type (impl Trait syntax)  Static dispatch (resolved at compile time)  The compiler knows the exact concrete return type at compile time (e.g., Dog), so there’s no vtable and no heap allocation. However, it generates only one version—not multiple like generics.
-dyn Trait                       fn foo(x: Box<dyn Trait>)   Trait object / Dynamic polymorphism     Dynamic dispatch (via vtable)               The compiler doesn’t know the concrete type at compile time. Calls go through a vtable at runtime. Requires heap allocation and pointer indirection.
+dyn Trait                       xxxxfn foo(x: Box<dyn Trait>)   Trait object / Dynamic polymorphism     Dynamic dispatch (via vtable)               The compiler doesn’t know the concrete type at compile time. Calls go through a vtable at runtime. Requires heap allocation and pointer indirection.
+
+
+
+pub trait Speak {
+    fn sound(&self) -> String;
+}
+
+pub struct Dog;
+impl Speak for Dog {
+    fn sound(&self) -> String {
+        "Woof!".to_string()
+    }
+}
+
+pub struct Cat;
+impl Speak for Cat {
+    fn sound(&self) -> String {
+        "Meow!".to_string()
+    }
+}
+
+// 👇 Library function returning a concrete type (Dog)
+pub fn make_pet() -> Dog {
+    Dog
+}
+
+// 👇 behind the scene compiler substitute with actual type
+pub fn make_pet() -> Dog {
+    Dog
+}
+
+// 👇 Library function returns "something that implements Speak"
+pub fn make_pet_impl() -> impl Speak {
+    Dog
+}
+
+// 📄 main.rs
+use mylib::*;
+
+fn main() {
+    
+    //CASE OF RETURNING ACTUAL TYPE:
+    let pet: Dog = make_pet(); // pet is of type Dog
+    println!("{}", pet.sound());
+
+    // if you (the library author) change it to return a Cat, the user’s code breaks because the public API contract changed — it no longer returns a Dog.
+
+    //CASE OF USING IMPL TRAIT:
+    let pet_impl = make_pet_impl(); // pet: impl Speak (type hidden)
+    println!("{}", pet_impl.sound());
+
+    // if user changes return value from Dog to Cat then it will not break the Code.
+    //     The function signature did not change — it still promises the same contract:
+    // “Return something that implements Speak.”
+
+}
+
+

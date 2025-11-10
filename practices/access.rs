@@ -19,3 +19,6 @@ ANSWER:
 // However, fields inside the struct are private by default, even if the struct is public.
 // So, if you want other modules to access the fields directly (e.g., response.task), you must also write pub before each field:
 
+qualifiers with implementations:
+For inherent impls (e.g., impl MyType { ... }), you can use visibility qualifiers like pub on methods and fields. This controls whether those methods are accessible from outside the module.
+For trait impls (e.g., impl SomeTrait for MyType { ... }), you must NOT use pub on the methods. The visibility is determined by the trait definition itself, not by the impl.
